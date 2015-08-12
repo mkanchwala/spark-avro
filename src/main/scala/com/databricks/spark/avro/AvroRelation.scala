@@ -104,10 +104,10 @@ case class AvroRelation(
       .toStream
       .map(_.getPath)
       .flatMap(getAllFiles(fs)(_))
-    val singleFile = statuses
-      .find(_.getName.endsWith("avro"))
-      .getOrElse(sys.error(s"Could not find .avro file with schema at $path"))
-
+    val singleFile = statuses.find { x =>
+      println(x)
+      x.getName.contains("-") }.get
+    
     val input = new FsInput(singleFile, sqlContext.sparkContext.hadoopConfiguration)
     val reader = new GenericDatumReader[GenericRecord]()
     DataFileReader.openReader(input, reader)
